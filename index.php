@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($row['role'] === 'student') {
                 header('Location: students/student_dashboard.php');
             } elseif ($row['role'] === 'tpo') {
-                header('Location: tpo/job_posting.php');
+                header('Location: tpo/tpo_dashboard.php');
             }
         } else {
             $error = "Invalid password.";
@@ -37,56 +37,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus Recruitment System</title>
-    
-    <!-- Tailwind CSS -->
-    <link href="public\css\style.css" rel="stylesheet"> <!-- Update this to your Tailwind CSS path -->
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="font-sans bg-gray-100 h-screen">
+<body class="bg-light">
 
     <!-- Header Section -->
-    <header class="bg-blue-900 text-white py-2">
-        <div class="container mx-auto flex items-center justify-center gap-6">
+    <header class="bg-primary text-white py-2">
+        <div class="container d-flex align-items-center justify-content-center">
             <div class="logo flex-shrink-0">
                 <a href="index.php">
-                    <img src="assets/logo.png" alt="Logo" class="w-16 h-16 rounded-full">
+                    <img src="assets/logo.png" alt="Logo" class="rounded-circle" width="64" height="64">
                 </a>
             </div>
             <nav>
-                <h1 class="text-3xl font-semibold text-center">Campus Recruitment Management System</h1>
+                <h1 class="h3 font-weight-bold text-center ml-3">Campus Recruitment Management System</h1>
             </nav>
         </div>
     </header>
 
     <!-- Main content: Login Form -->
-    <div class="w-full max-w-full mx-auto my-14 flex flex-col items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-
-            <h2 class="text-3xl font-bold text-center mb-6">Login</h2>
+    <div class="container mt-5 d-flex flex-column align-items-center justify-content-center">
+        <div class="card shadow-lg p-4 w-100" style="max-width: 400px;">
+            <h2 class="text-center font-weight-bold mb-4">Login</h2>
 
             <?php if (isset($error)): ?>
-                <p class="text-red-600 text-center mb-4"><?= $error; ?></p>
+                <div class="alert alert-danger text-center"><?= $error; ?></div>
             <?php endif; ?>
 
             <form method="POST" action="">
-                <div class="mb-4">
-                    <label for="username" class="block text-gray-700 font-bold mb-2">Username:</label>
-                    <input type="text" id="username" name="username" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                <div class="form-group">
+                    <label for="username" class="font-weight-bold">Username:</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
                 </div>
 
-                <div class="mb-6">
-                    <label for="password" class="block text-gray-700 font-bold mb-2">Password:</label>
-                    <input type="password" id="password" name="password" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600" required>
+                <div class="form-group">
+                    <label for="password" class="font-weight-bold">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition">Login</button>
+                    <button type="submit" class="btn btn-primary btn-block font-weight-bold">Login</button>
                 </div>
             </form>
 
-            <p class="mt-6 text-center">Don't have an account? 
-                <a href="students/students_registration.php" class="text-blue-600 hover:underline">Go to Registration</a>
+            <p class="mt-4 text-center">Don't have an account? 
+                <a href="students/students_registration.php" class="text-primary">Go to Registration</a>
             </p>
         </div>
     </div>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+

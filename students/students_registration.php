@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insert into students table
         $student_query = "INSERT INTO students (student_id, user_id, first_name, last_name, email, contact_number, degree, branch, batch)
-                          VALUES ('$student_id' ,'$user_id', '$first_name', '$last_name', '$email', '$contact_number', '$degree', '$branch', '$batch')";
+                          VALUES ('$student_id', '$user_id', '$first_name', '$last_name', '$email', '$contact_number', '$degree', '$branch', '$batch')";
         if (mysqli_query($conn, $student_query)) {
             echo "Student registration successful!";
         } else {
@@ -37,58 +37,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Registration</title>
-    <link rel="stylesheet" href="style.css"> <!-- Optional CSS -->
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="registration-container">
-        <h2>Student Registration</h2>
+<body class="bg-light d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+
+    <div class="card shadow-lg p-4 w-100" style="max-width: 500px;">
+        <h2 class="text-center font-weight-bold mb-4">Student Registration</h2>
 
         <form method="POST" action="">
-            <label for="student_id">Student ID:</label>
-            <input type="text" id="student_id" name="student_id" required>
+            <div class="form-group">
+                <label for="student_id">Student ID:</label>
+                <input type="text" id="student_id" name="student_id" class="form-control" required>
+            </div>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
 
-            <label for="first_name">First Name:</label>
-            <input type="text" id="first_name" name="first_name" required>
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" class="form-control" required>
+            </div>
 
-            <label for="last_name">Last Name:</label>
-            <input type="text" id="last_name" name="last_name" required>
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" class="form-control" required>
+            </div>
 
-            <label for="contact_number">Contact Number:</label>
-            <input type="text" id="contact_number" name="contact_number" required>
+            <div class="form-group">
+                <label for="contact_number">Contact Number:</label>
+                <input type="text" id="contact_number" name="contact_number" class="form-control" required>
+            </div>
 
-            <label for="degree">Degree:</label>
-            <select id="degree" name="degree" required>
-              <option value="" disabled selected>Select your degree</option>
-              <option value="B.Tech">B.Tech</option>
-              <option value="MCA">MCA</option>
-              <option value="MSC IT">MSC IT</option>
-            </select>
+            <div class="form-group">
+                <label for="degree">Degree:</label>
+                <select id="degree" name="degree" class="form-control" required>
+                    <option value="" disabled selected>Select your degree</option>
+                    <option value="B.Tech">B.Tech</option>
+                    <option value="MCA">MCA</option>
+                    <option value="MSC IT">MSC IT</option>
+                </select>
+            </div>
 
-            <label for="branch">Branch:</label>
-            <select id="branch" name="branch" required>
-              <option value="" disabled selected>Select your branch</option>
-              <option value="CE">CE</option>
-              <option value="CSE">CSE</option>
-              <option value="IT">IT</option>
-              <option value="AI/ML">AI/ML</option>
-              <option value="MCA">MCA</option>
-              <option value="MSC IT">MSC IT</option>
-            </select>
+            <div class="form-group">
+                <label for="branch">Branch:</label>
+                <select id="branch" name="branch" class="form-control" required>
+                    <option value="" disabled selected>Select your branch</option>
+                    <option value="CE">CE</option>
+                    <option value="CSE">CSE</option>
+                    <option value="IT">IT</option>
+                    <option value="AI/ML">AI/ML</option>
+                    <option value="MCA">MCA</option>
+                    <option value="MSC IT">MSC IT</option>
+                </select>
+            </div>
 
-            <label for="batch">Batch (exa. 2025)</label>
-            <input type="number" id="batch" name="batch" required>
+            <div class="form-group">
+                <label for="batch">Batch (e.g. 2025):</label>
+                <input type="number" id="batch" name="batch" class="form-control" required>
+            </div>
 
-
-            <button type="submit">Register</button>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </div>
         </form>
 
-        <p>Already have an account? <a href="../login.php">Login here</a></p>
+        <p class="mt-3 text-center">Already have an account? <a href="../index.php" class="text-primary">Login here</a></p>
     </div>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
