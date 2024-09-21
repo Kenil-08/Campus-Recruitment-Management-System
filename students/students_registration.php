@@ -12,8 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $branch = $_POST['branch'];
     $batch = $_POST['batch'];
 
+    $name = $first_name . ' ' . $last_name;
     // Insert into users table
-    $query = "INSERT INTO users (username, password, role) VALUES ('$email', '$password', 'student')";
+    $query = "INSERT INTO users (username, password, role, name) VALUES ('$email', '$password', 'student', '$name')";
     if (mysqli_query($conn, $query)) {
         $user_id = mysqli_insert_id($conn); // Get user_id for student table
 

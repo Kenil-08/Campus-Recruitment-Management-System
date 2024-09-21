@@ -1,6 +1,15 @@
 <?php
     include '../db.php'; // Database connection
+    
+    session_start();
+    print_r($_SESSION);
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php'); // Redirect to login page if not logged in
+        exit();
+    }
+    $name = $_SESSION['name']; // Retrieve the name from the session  
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +47,7 @@
         <div class="flex-fill p-5">
             <div class="card shadow-lg">
                 <div class="card-body">
-                    <h1 class="card-title h3 mb-4">Welcome to the TPO Dashboard</h1>
+                    <h1 class="card-title h3 mb-4">Welcome <?php echo htmlspecialchars($name); ?>!</h1>
                     <p class="card-text">Select an option from the navigation menu to get started.</p>
                 </div>
             </div>

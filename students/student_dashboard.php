@@ -1,5 +1,13 @@
 <?php
     include '../db.php'; // Database connection
+
+    session_start();
+    print_r($_SESSION);
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php'); // Redirect to login page if not logged in
+        exit();
+    }
+    $name = $_SESSION['name']; // Retrieve the name from the session
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,6 +60,9 @@
                             <a class="nav-link" href="my_applications.php">My Applications</a>
                         </li>
                         <li class="nav-item mb-3">
+                            <a class="nav-link" href="acedemic_form.php">Acedemic Form</a>
+                        </li>
+                        <li class="nav-item mb-3">
                             <a class="nav-link" href="profile.php">My Profile</a>
                         </li>
                         <li class="nav-item mb-3">
@@ -64,7 +75,7 @@
             <!-- Main content -->
             <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
                 <div class="card shadow-sm p-4">
-                    <h1 class="h3 font-weight-bold">Hello Student</h1>
+                    <h1 class="h3 font-weight-bold">Hello <?php echo htmlspecialchars($name); ?> !</h1>
                     <p class="lead">Browse through the available job postings and apply for the ones that interest you.</p>
                 </div>
             </main>

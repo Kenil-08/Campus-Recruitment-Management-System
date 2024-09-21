@@ -15,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (password_verify($password, $row['password'])) {
             $_SESSION['user_id'] = $row['user_id'];
             $_SESSION['role'] = $row['role'];
+            $_SESSION['username'] = $row['username'];
+            $_SESSION['name'] = $row['name'];
 
             // Redirect based on user role
             if ($row['role'] === 'student') {

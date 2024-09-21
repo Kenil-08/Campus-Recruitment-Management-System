@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $contact_number = $_POST['contact_number'];
 
     // Insert into users table
-    $query = "INSERT INTO users (username, password, role) VALUES ('$email', '$password', 'tpo')";
+    $query = "INSERT INTO users (username, password, role, name) VALUES ('$email', '$password', 'tpo', '$name')";
     if (mysqli_query($conn, $query)) {
         $user_id = mysqli_insert_id($conn); // Get user_id for tpo table
 
@@ -79,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Register</button>
                         </form>
-                        <p class="mt-3 text-center">Already have an account? <a href="../login.php">Login here</a></p>
                     </div>
                 </div>
             </div>
