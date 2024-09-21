@@ -6,31 +6,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $company_name = $_POST['company_name'];
     $city = $_POST['city'];
     $ctc = $_POST['ctc'];
-    $bond = isset($_POST['bond']) ? 1 : 0; // Checkbox for bond, convert to boolean
-
-    // Handle allowed branches (concatenate selected branches)
+    $bond = isset($_POST['bond']) ? 1 : 0;
     $allowed_branches = isset($_POST['allowed_branch']) ? implode(', ', $_POST['allowed_branch']) : '';
 
-    $about = $_POST['about'];
-
-    // Handle file upload for job description document
+    // Handle file upload for job description document with UUID
     $jd_document = null;
     if (isset($_FILES['jd_document']) && $_FILES['jd_document']['error'] == 0) {
-        $upload_dir = 'uploads/'; // Directory to save uploaded documents
-        $filename = basename($_FILES['jd_document']['name']);
+        $upload_dir = '../uploads/job_document/';
+        $uuid = uniqid(); // Generate a unique identifier
+        $extension = pathinfo($_FILES['jd_document']['name'], PATHINFO_EXTENSION);
+        $filename = $uuid . '.' . $extension; // Create the unique file name
         $target_file = $upload_dir . $filename;
 
         // Move uploaded file to target directory
         if (move_uploaded_file($_FILES['jd_document']['tmp_name'], $target_file)) {
-            $jd_document = $target_file;
+            $jd_document = $filename; // Store the unique file name in the database
         } else {
             echo "<div class='alert alert-danger'>Error uploading the document.</div>";
         }
     }
 
     // Insert into job_postings table
-    $query = "INSERT INTO job_postings (job_title, company_name, city, CTC, bond, allowed_branch, about, job_document) 
-              VALUES ('$job_title', '$company_name', '$city', '$ctc', '$bond', '$allowed_branches', '$about', '$jd_document')";
+    $query = "INSERT INTO job_postings (job_title, company_name, city, CTC, bond, allowed_branch, job_document) 
+              VALUES ('$job_title', '$company_name', '$city', '$ctc', '$bond', '$allowed_branches', '$jd_document')";
 
     if (mysqli_query($conn, $query)) {
         echo "<div class='alert alert-success'>Job posting successful!</div>";
@@ -83,17 +81,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <h2 class="text-center">Create Job Posting</h2>
                     </div>
                     <div class="card-body">
-                        <!-- Accordion -->
-                        <div class="accordion" id="jobFormAccordion">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        Job Details
-                                    </button>
-                                </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#jobFormAccordion">
-                                    <div class="accordion-body">
-                                        <form method="POST" action="job_posting.php" enctype="multipart/form-data">
+                        <!-- Use a single form wrapping all input fields -->
+                        <form method="POST" action="job_posting.php" enctype="multipart/form-data">
+                            <div class="accordion" id="jobFormAccordion">
+                                <!-- Accordion Item 1 -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Job Details
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#jobFormAccordion">
+                                        <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                     <label for="job_title" class="form-label">Job Title:</label>
@@ -118,19 +117,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        Additional Details
-                                    </button>
-                                </h2>
-                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#jobFormAccordion">
-                                    <div class="accordion-body">
-                                        <form method="POST" action="job_posting.php" enctype="multipart/form-data">
+
+                                <!-- Accordion Item 2 -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                            Additional Details
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#jobFormAccordion">
+                                        <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                     <label for="allowed_branch" class="form-label">Allowed Branches:</label>
@@ -151,19 +150,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                                     <label for="jd_document" class="form-label">Job Description Document (optional):</label>
                                                     <input type="file" id="jd_document" name="jd_document" class="form-control">
                                                 </div>
-                                                <div class="col-md-12 mb-3">
-                                                    <label for="about" class="form-label">About the Job:</label>
-                                                    <textarea id="about" name="about" class="form-control" rows="4"></textarea>
-                                                </div>
-                                                <div class="text-center">
-                                                    <button type="submit" class="btn btn-primary w-100">Post Job</button>
-                                                </div>
                                             </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <!-- Submit Button -->
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary w-100">Post Job</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
