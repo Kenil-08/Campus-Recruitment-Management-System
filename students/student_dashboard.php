@@ -2,7 +2,6 @@
     include '../db.php'; // Database connection
 
     session_start();
-    print_r($_SESSION);
     if (!isset($_SESSION['user_id'])) {
         header('Location: ../index.php'); // Redirect to login page if not logged in
         exit();

@@ -1,41 +1,47 @@
 <?php
-include '../db.php'; // Adjust the path if needed
+    include '../db.php'; // Adjust the path if needed
+    session_start();
+    //print_r($_SESSION);
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php'); // Redirect to login page if not logged in
+        exit();
+    }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $job_title = $_POST['job_title'];
-    $company_name = $_POST['company_name'];
-    $city = $_POST['city'];
-    $ctc = $_POST['ctc'];
-    $bond = isset($_POST['bond']) ? 1 : 0;
-    $allowed_branches = isset($_POST['allowed_branch']) ? implode(', ', $_POST['allowed_branch']) : '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $job_title = $_POST['job_title'];
+        $company_name = $_POST['company_name'];
+        $city = $_POST['city'];
+        $ctc = $_POST['ctc'];
+        $bond = isset($_POST['bond']) ? 1 : 0;
+        $allowed_branches = isset($_POST['allowed_branch']) ? implode(', ', $_POST['allowed_branch']) : '';
 
-    // Handle file upload for job description document with UUID
-    $jd_document = null;
-    if (isset($_FILES['jd_document']) && $_FILES['jd_document']['error'] == 0) {
-        $upload_dir = '../uploads/job_document/';
-        $uuid = uniqid(); // Generate a unique identifier
-        $extension = pathinfo($_FILES['jd_document']['name'], PATHINFO_EXTENSION);
-        $filename = $uuid . '.' . $extension; // Create the unique file name
-        $target_file = $upload_dir . $filename;
+        // Handle file upload for job description document with UUID
+        $jd_document = null;
+        if (isset($_FILES['jd_document']) && $_FILES['jd_document']['error'] == 0) {
+            $upload_dir = '../uploads/job_document/';
+            $uuid = uniqid(); // Generate a unique identifier
+            $extension = pathinfo($_FILES['jd_document']['name'], PATHINFO_EXTENSION);
+            $filename = $uuid . '.' . $extension; // Create the unique file name
+            $target_file = $upload_dir . $filename;
 
-        // Move uploaded file to target directory
-        if (move_uploaded_file($_FILES['jd_document']['tmp_name'], $target_file)) {
-            $jd_document = $filename; // Store the unique file name in the database
-        } else {
-            echo "<div class='alert alert-danger'>Error uploading the document.</div>";
+            // Move uploaded file to target directory
+            if (move_uploaded_file($_FILES['jd_document']['tmp_name'], $target_file)) {
+                $jd_document = $filename; // Store the unique file name in the database
+            } else {
+                echo "<div class='alert alert-danger'>Error uploading the document.</div>";
+            }
         }
-    }
 
-    // Insert into job_postings table
-    $query = "INSERT INTO job_postings (job_title, company_name, city, CTC, bond, allowed_branch, job_document) 
-              VALUES ('$job_title', '$company_name', '$city', '$ctc', '$bond', '$allowed_branches', '$jd_document')";
+        // Insert into job_postings table
+        $query = "INSERT INTO job_postings (job_title, company_name, city, CTC, bond, allowed_branch, job_document) 
+                  VALUES ('$job_title', '$company_name', '$city', '$ctc', '$bond', '$allowed_branches', '$jd_document')";
 
-    if (mysqli_query($conn, $query)) {
-        echo "<div class='alert alert-success'>Job posting successful!</div>";
-    } else {
-        echo "<div class='alert alert-danger'>Error: " . mysqli_error($conn) . "</div>";
-    }
-}
+        if (mysqli_query($conn, $query)) {
+            echo "<div class='alert alert-success'>Job posting successful!</div>";
+        } else {
+            echo "<div class='alert alert-danger'>Error: " . mysqli_error($conn) . "</div>";
+        }
+    }   
 ?>
 
 <!DOCTYPE html>

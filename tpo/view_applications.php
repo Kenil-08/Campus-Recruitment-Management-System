@@ -1,31 +1,36 @@
 <?php
-include '../db.php'; // Adjust the path to your database connection file
+    include '../db.php'; // Adjust the path to your database connection file
+    session_start();
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php'); // Redirect to login page if not logged in
+        exit();
+    }
 
-// Fetch applications along with student and job details
-$query = "
-    SELECT 
-        applications.id AS application_id,
-        students.student_id,
-        students.first_name,
-        students.last_name,
-        students.email,
-        students.degree,
-        students.branch,
-        students.contact_number,
-        student_academic_details.resume,
-        job_postings.company_name,
-        job_postings.job_title
-    FROM applications
-    JOIN students ON applications.user_id = students.user_id
-    JOIN job_postings ON applications.job_id = job_postings.job_id
-    JOIN student_academic_details ON students.student_id = student_academic_details.student_id
-";
-$result = mysqli_query($conn, $query);
-
-if (!$result) {
-    echo "Error fetching applications data: " . mysqli_error($conn);
-    exit;
-}
+    // Fetch applications along with student and job details
+    $query = "
+        SELECT 
+            applications.id AS application_id,
+            students.student_id,
+            students.first_name,
+            students.last_name,
+            students.email,
+            students.degree,
+            students.branch,
+            students.contact_number,
+            student_academic_details.resume,
+            job_postings.company_name,
+            job_postings.job_title
+        FROM applications
+        JOIN students ON applications.user_id = students.user_id
+        JOIN job_postings ON applications.job_id = job_postings.job_id
+        JOIN student_academic_details ON students.student_id = student_academic_details.student_id
+    ";
+    $result = mysqli_query($conn, $query);
+    
+    if (!$result) {
+        echo "Error fetching applications data: " . mysqli_error($conn);
+        exit;
+    }
 ?>
 
 <!DOCTYPE html>

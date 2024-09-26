@@ -1,14 +1,20 @@
 <?php
-include '../db.php'; // Adjust path to your db connection file
+    include '../db.php';
+    session_start();
+   
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php'); // Redirect to login page if not logged in
+        exit();
+    }
+    
+    // Fetch student details from the students table
+    $query = "SELECT student_id, first_name, last_name, degree, branch, placement_status FROM students";
+    $result = mysqli_query($conn, $query);
 
-// Fetch student details from the students table
-$query = "SELECT student_id, first_name, last_name, degree, branch, placement_status FROM students";
-$result = mysqli_query($conn, $query);
-
-if (!$result) {
-    echo "Error fetching student data: " . mysqli_error($conn);
-    exit;
-}
+    if (!$result) {
+        echo "Error fetching student data: " . mysqli_error($conn);
+        exit;
+    }
 ?>
 
 <!DOCTYPE html>

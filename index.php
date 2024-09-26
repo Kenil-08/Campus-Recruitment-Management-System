@@ -1,36 +1,37 @@
 <?php
-session_start();
-include 'db.php'; // Database connection
+    session_start();
+    include 'db.php'; // Database connection
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
 
-    $query = "SELECT * FROM users WHERE username='$username'";
-    $result = mysqli_query($conn, $query);
+        $query = "SELECT * FROM users WHERE username='$username'";
 
-    if (mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
+        $result = mysqli_query($conn, $query);
 
-        if (password_verify($password, $row['password'])) {
-            $_SESSION['user_id'] = $row['user_id'];
-            $_SESSION['role'] = $row['role'];
-            $_SESSION['username'] = $row['username'];
-            $_SESSION['name'] = $row['name'];
+        if (mysqli_num_rows($result) > 0) {
+            $row = mysqli_fetch_assoc($result);
 
-            // Redirect based on user role
-            if ($row['role'] === 'student') {
-                header('Location: students/student_dashboard.php');
-            } elseif ($row['role'] === 'tpo') {
-                header('Location: tpo/tpo_dashboard.php');
+            if (password_verify($password, $row['password'])) {
+                $_SESSION['user_id'] = $row['user_id'];
+                $_SESSION['role'] = $row['role'];
+                $_SESSION['username'] = $row['username'];
+                $_SESSION['name'] = $row['name'];     
+
+                // Redirect based on user role
+                if ($row['role'] === 'student') {
+                    header('Location: students/student_dashboard.php');
+                } elseif ($row['role'] === 'tpo') {
+                    header('Location: tpo/tpo_dashboard.php');
+                }
+            } else {
+                $error = "Invalid password.";
             }
         } else {
-            $error = "Invalid password.";
+            $error = "User not found.";
         }
-    } else {
-        $error = "User not found.";
     }
-}
 ?>
 
 <!DOCTYPE html>
@@ -95,7 +96,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-
-

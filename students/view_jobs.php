@@ -1,14 +1,21 @@
 <?php
-include '../db.php'; // Adjust the path to your database connection file
+    include '../db.php'; 
 
-// Fetch job postings from the job_postings table including job_id
-$query = "SELECT job_id, job_title, company_name, city, ctc, bond, allowed_branch, status, job_document FROM job_postings";
-$result = mysqli_query($conn, $query);
+    session_start();
+    print_r($_SESSION);
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php'); // Redirect to login page if not logged in
+        exit();
+    }
+    
+    // Fetch job postings from the job_postings table including job_id
+    $query = "SELECT job_id, job_title, company_name, city, ctc, bond, allowed_branch, status, job_document FROM job_postings";
+    $result = mysqli_query($conn, $query);
 
-if (!$result) {
-    echo "Error fetching job data: " . mysqli_error($conn);
-    exit;
-}
+    if (!$result) {
+        echo "Error fetching job data: " . mysqli_error($conn);
+        exit;
+    }
 ?>
 
 <!DOCTYPE html>

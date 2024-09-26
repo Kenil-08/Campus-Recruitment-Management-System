@@ -1,29 +1,35 @@
 <?php
-include '../db.php'; // Adjust the path if needed
+    include '../db.php'; // Adjust the path if needed
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $contact_number = $_POST['contact_number'];
+    session_start();
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php'); // Redirect to login page if not logged in
+        exit();
+    }
 
-    // Insert into users table
-    $query = "INSERT INTO users (username, password, role, name) VALUES ('$email', '$password', 'tpo', '$name')";
-    if (mysqli_query($conn, $query)) {
-        $user_id = mysqli_insert_id($conn); // Get user_id for tpo table
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $contact_number = $_POST['contact_number'];
 
-        // Insert into tpo table
-        $tpo_query = "INSERT INTO tpo (user_id, name, email, contact_number)
-                      VALUES ('$user_id', '$name', '$email', '$contact_number')";
-        if (mysqli_query($conn, $tpo_query)) {
-            echo "<div class='alert alert-success'>TPO registration successful!</div>";
+        // Insert into users table
+        $query = "INSERT INTO users (username, password, role, name) VALUES ('$email', '$password', 'tpo', '$name')";
+        if (mysqli_query($conn, $query)) {
+            $user_id = mysqli_insert_id($conn); // Get user_id for tpo table
+
+            // Insert into tpo table
+            $tpo_query = "INSERT INTO tpo (user_id, name, email, contact_number)
+                          VALUES ('$user_id', '$name', '$email', '$contact_number')";
+            if (mysqli_query($conn, $tpo_query)) {
+                echo "<div class='alert alert-success'>TPO registration successful!</div>";
+            } else {
+                echo "<div class='alert alert-danger'>Error: " . mysqli_error($conn) . "</div>";
+            }
         } else {
             echo "<div class='alert alert-danger'>Error: " . mysqli_error($conn) . "</div>";
         }
-    } else {
-        echo "<div class='alert alert-danger'>Error: " . mysqli_error($conn) . "</div>";
     }
-}
 ?>
 
 <!DOCTYPE html>

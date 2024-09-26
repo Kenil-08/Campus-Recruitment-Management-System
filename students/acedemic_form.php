@@ -1,49 +1,55 @@
 <?php
-include '../db.php'; // Adjust the path if needed
+    include '../db.php'; 
+    
+    session_start();
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php'); // Redirect to login page if not logged in
+        exit();
+    }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $student_id = $_POST['student_id'];
-    $tenth_percentage = $_POST['tenth_percentage'];
-    $twelfth_percentage = $_POST['twelfth_percentage'];
-    $diploma_cgpa = isset($_POST['diploma_cgpa']) ? $_POST['diploma_cgpa'] : null;
-    $bachelors_cgpa = $_POST['bachelors_cgpa'];
-    $masters_cgpa = isset($_POST['masters_cgpa']) ? $_POST['masters_cgpa'] : null;
-
-    // Handle file upload for resume
-    $resume = null;
-    if (isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
-        $upload_dir = '../uploads/resume/';
-        $uuid = uniqid(); // Generate a unique identifier
-        $extension = pathinfo($_FILES['resume']['name'], PATHINFO_EXTENSION);
-        $filename = $uuid . '.' . $extension; // Create the unique file name
-        $target_file = $upload_dir . $filename;
-
-        // Move uploaded file to target directory
-        if (move_uploaded_file($_FILES['resume']['tmp_name'], $target_file)) {
-            $resume = $filename; // Store the unique file name in the database
-        } else {
-            echo "<div class='alert alert-danger'>Error uploading the resume.</div>";
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $student_id = $_POST['student_id'];
+        $tenth_percentage = $_POST['tenth_percentage'];
+        $twelfth_percentage = $_POST['twelfth_percentage'];
+        $diploma_cgpa = isset($_POST['diploma_cgpa']) ? $_POST['diploma_cgpa'] : null;
+        $bachelors_cgpa = $_POST['bachelors_cgpa'];
+        $masters_cgpa = isset($_POST['masters_cgpa']) ? $_POST['masters_cgpa'] : null;
+    
+        // Handle file upload for resume
+        $resume = null;
+        if (isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
+            $upload_dir = '../uploads/resume/';
+            $uuid = uniqid(); // Generate a unique identifier
+            $extension = pathinfo($_FILES['resume']['name'], PATHINFO_EXTENSION);
+            $filename = $uuid . '.' . $extension; // Create the unique file name
+            $target_file = $upload_dir . $filename;
+        
+            // Move uploaded file to target directory
+            if (move_uploaded_file($_FILES['resume']['tmp_name'], $target_file)) {
+                $resume = $filename; // Store the unique file name in the database
+            } else {
+                echo "<div class='alert alert-danger'>Error uploading the resume.</div>";
+            }
         }
+    
+        // Insert into student_academic_details table
+        $query = "INSERT INTO student_academic_details 
+                  (student_id, tenth_percentage, twelfth_percentage, diploma_cgpa, bachelors_cgpa, masters_cgpa, resume) 
+                  VALUES 
+                  ('$student_id', '$tenth_percentage', '$twelfth_percentage', 
+                  " . ($diploma_cgpa !== null ? "'$diploma_cgpa'" : "NULL") . ", 
+                  '$bachelors_cgpa', " . ($masters_cgpa !== null ? "'$masters_cgpa'" : "NULL") . ", 
+                  '$resume')";
+    
+        if (mysqli_query($conn, $query)) {
+            echo "<div class='alert alert-success'>Academic details submitted successfully!</div>";
+        } else {
+            echo "<div class='alert alert-danger'>Error: " . mysqli_error($conn) . "</div>";
+        }
+    
+        // Close the database connection
+        mysqli_close($conn);
     }
-
-    // Insert into student_academic_details table
-    $query = "INSERT INTO student_academic_details 
-              (student_id, tenth_percentage, twelfth_percentage, diploma_cgpa, bachelors_cgpa, masters_cgpa, resume) 
-              VALUES 
-              ('$student_id', '$tenth_percentage', '$twelfth_percentage', 
-              " . ($diploma_cgpa !== null ? "'$diploma_cgpa'" : "NULL") . ", 
-              '$bachelors_cgpa', " . ($masters_cgpa !== null ? "'$masters_cgpa'" : "NULL") . ", 
-              '$resume')";
-
-    if (mysqli_query($conn, $query)) {
-        echo "<div class='alert alert-success'>Academic details submitted successfully!</div>";
-    } else {
-        echo "<div class='alert alert-danger'>Error: " . mysqli_error($conn) . "</div>";
-    }
-
-    // Close the database connection
-    mysqli_close($conn);
-}
 ?>
 
 
