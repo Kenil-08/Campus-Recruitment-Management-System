@@ -2,7 +2,6 @@
     include '../db.php'; 
 
     session_start();
-    print_r($_SESSION);
     if (!isset($_SESSION['user_id'])) {
         header('Location: ../index.php'); // Redirect to login page if not logged in
         exit();
@@ -33,12 +32,27 @@
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
+        <div class="container-fluid">
             <a class="navbar-brand" href="student_dashboard.php">Campus Recruitment System</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="student_dashboard.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view_jobs.php">View Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="acedemic_form.php">Acedemic Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="my_application.php">My Applications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.php">Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../index.php">Logout</a>

@@ -40,6 +40,15 @@
                         <a class="nav-link" href="tpo_dashboard.php">Home</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="job_posting.php">Post a Job</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view_students.php">Students Data</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view_applications.php">Applications</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="../index.php">Logout</a>
                     </li>
                 </ul>

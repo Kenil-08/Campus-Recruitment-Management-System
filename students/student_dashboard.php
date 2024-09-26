@@ -53,7 +53,7 @@
                     <h1 class="h4 text-white text-center font-weight-bold mb-4">Student Dashboard</h1>
                     <ul class="nav flex-column">
                         <li class="nav-item mb-3">
-                            <a class="nav-link" href="view_jobs.php">View Available Jobs</a>
+                            <a class="nav-link" href="view_jobs.php">Available Jobs</a>
                         </li>
                         <li class="nav-item mb-3">
                             <a class="nav-link" href="my_applications.php">My Applications</a>

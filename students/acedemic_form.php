@@ -87,7 +87,16 @@
                         <a class="nav-link" href="view_jobs.php">View Jobs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="logout.php">Logout</a>
+                        <a class="nav-link" href="acedemic_form.php">Acedemic Form</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="my_application.php">My Applications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.php">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.php">Logout</a>
                     </li>
                 </ul>
             </div>
