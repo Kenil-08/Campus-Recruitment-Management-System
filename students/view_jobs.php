@@ -1,8 +1,8 @@
 <?php
 include '../db.php'; // Adjust the path to your database connection file
 
-// Fetch job postings from the job_postings table
-$query = "SELECT job_title, company_name, city, ctc, bond, allowed_branch, status, job_document FROM job_postings";
+// Fetch job postings from the job_postings table including job_id
+$query = "SELECT job_id, job_title, company_name, city, ctc, bond, allowed_branch, status, job_document FROM job_postings";
 $result = mysqli_query($conn, $query);
 
 if (!$result) {
@@ -56,6 +56,7 @@ if (!$result) {
                         <th scope="col">Allowed Branches</th>
                         <th scope="col">Job Document</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,6 +76,11 @@ if (!$result) {
                                 <?php endif; ?>
                             </td>
                             <td><?php echo $row['status'] == 1 ? 'Open' : 'Closed'; ?></td>
+                            <td>
+                                <?php if ($row['status'] == 1): ?>
+                                    <a href="apply.php?job_id=<?php echo $row['job_id']; ?>&company_name=<?php echo urlencode($row['company_name']); ?>" class="btn btn-success btn-sm">Apply</a>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
