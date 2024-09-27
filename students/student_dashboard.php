@@ -56,7 +56,7 @@
                             <a class="nav-link" href="view_jobs.php">Available Jobs</a>
                         </li>
                         <li class="nav-item mb-3">
-                            <a class="nav-link" href="my_applications.php">My Applications</a>
+                            <a class="nav-link" href="my_application.php">My Applications</a>
                         </li>
                         <li class="nav-item mb-3">
                             <a class="nav-link" href="acedemic_form.php">Acedemic Form</a>
