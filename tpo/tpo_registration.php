@@ -42,13 +42,23 @@
 </head>
 <body class="bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="tpo_dashboard.php">Campus Recruitment System</a>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="tpo_dashboard.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="job_posting.php">Post a Job</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view_students.php">Students Data</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="view_applications.php">Applications</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../index.php">Logout</a>
