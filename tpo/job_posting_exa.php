@@ -7,13 +7,21 @@
         exit();
     }
 
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
+    // Include PHPMailer files
+    require '../PHPMailer/src/Exception.php';
+    require '../PHPMailer/src/PHPMailer.php';
+    require '../PHPMailer/src/SMTP.php';
+
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $job_title = $_POST['job_title'];
         $company_name = $_POST['company_name'];
         $city = $_POST['city'];
         $ctc = $_POST['ctc'];
         $bond = isset($_POST['bond']) ? 1 : 0;
-        $allowed_branches = isset($_POST['allowed_branch']) ? implode(', ', $_POST['allowed_branch']) : '';
+        $allowed_branches = isset($_POST['allowed_branch']) ? implode(',', $_POST['allowed_branch']) : '';
 
         $jd_document = null;
         if (isset($_FILES['jd_document']) && $_FILES['jd_document']['error'] == 0) {
@@ -35,10 +43,46 @@
 
         if (mysqli_query($conn, $query)) {
             echo "<div class='alert alert-success'>Job posting successful!</div>";
+            sendJobNotification($job_title, $company_name, $conn);
         } else {
             echo "<div class='alert alert-danger'>Error: " . mysqli_error($conn) . "</div>";
         }
     }   
+    function sendJobNotification($job_title, $company_name, $conn) {
+        $mail = new PHPMailer(true);
+    
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'your_email@gmail.com'; // Your Gmail address
+            $mail->Password = 'your_password_or_app_password'; // App password or Gmail password
+            $mail->SMTPSecure = 'tls'; // Encryption method
+            $mail->Port = 587; // TLS port
+
+    
+            // Set the sender email
+            $mail->setFrom('your_email@gmail.com', 'TPO Admin');
+    
+            $student_query = "SELECT email FROM students";
+            $student_result = mysqli_query($conn, $student_query);
+    
+            while ($row = mysqli_fetch_assoc($student_result)) {
+                $mail->addAddress($row['email']);
+            }
+    
+            $mail->isHTML(true);
+            $mail->Subject = 'New Job Posting: ' . $job_title;
+            $mail->Body    = '<p>Dear Students,</p>
+                              <p>We are excited to announce a new job opportunity at <strong>' . $company_name . '</strong> for the position of <strong>' . $job_title . '</strong>.</p>
+                              <p>Please log in to the Campus Recruitment System to view more details and apply for the job before the deadline.</p>
+                              <p>Best regards,<br>TPO Office</p>';
+            $mail->send();
+            // echo 'Notification emails have been sent successfully.';
+        } catch (Exception $e) {
+            echo "Error: Email could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+    }
 ?>
 
 <!DOCTYPE html>
