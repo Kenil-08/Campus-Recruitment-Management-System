@@ -1,9 +1,9 @@
 <?php
-    include '../db.php'; // Adjust the path if needed
+    include '../db.php'; 
     session_start();
-    //print_r($_SESSION);
+    
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ../index.php'); // Redirect to login page if not logged in
+        header('Location: ../index.php'); 
         exit();
     }
 
@@ -15,24 +15,21 @@
         $bond = isset($_POST['bond']) ? 1 : 0;
         $allowed_branches = isset($_POST['allowed_branch']) ? implode(', ', $_POST['allowed_branch']) : '';
 
-        // Handle file upload for job description document with UUID
         $jd_document = null;
         if (isset($_FILES['jd_document']) && $_FILES['jd_document']['error'] == 0) {
             $upload_dir = '../uploads/job_document/';
             $uuid = uniqid(); // Generate a unique identifier
             $extension = pathinfo($_FILES['jd_document']['name'], PATHINFO_EXTENSION);
-            $filename = $uuid . '.' . $extension; // Create the unique file name
+            $filename = $uuid . '.' . $extension; 
             $target_file = $upload_dir . $filename;
 
-            // Move uploaded file to target directory
             if (move_uploaded_file($_FILES['jd_document']['tmp_name'], $target_file)) {
-                $jd_document = $filename; // Store the unique file name in the database
+                $jd_document = $filename; 
             } else {
                 echo "<div class='alert alert-danger'>Error uploading the document.</div>";
             }
         }
 
-        // Insert into job_postings table
         $query = "INSERT INTO job_postings (job_title, company_name, city, CTC, bond, allowed_branch, job_document) 
                   VALUES ('$job_title', '$company_name', '$city', '$ctc', '$bond', '$allowed_branches', '$jd_document')";
 
@@ -74,6 +71,9 @@
                         <a class="nav-link" href="job_posting.php">Post a Job</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="show_jobs.php">Show Jobs</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="view_students.php">Students Data</a>
                     </li>
                     <li class="nav-item">
@@ -96,7 +96,6 @@
                         <h2 class="text-center">Create Job Posting</h2>
                     </div>
                     <div class="card-body">
-                        <!-- Use a single form wrapping all input fields -->
                         <form method="POST" action="job_posting.php" enctype="multipart/form-data">
                             <div class="accordion" id="jobFormAccordion">
                                 <!-- Accordion Item 1 -->
@@ -181,7 +180,6 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

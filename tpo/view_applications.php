@@ -1,29 +1,29 @@
 <?php
-    include '../db.php'; // Adjust the path to your database connection file
+    include '../db.php';
     session_start();
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ../index.php'); // Redirect to login page if not logged in
+        header('Location: ../index.php'); 
         exit();
     }
 
-    // Fetch applications along with student and job details
     $query = "
         SELECT 
-            applications.id AS application_id,
+            applications.application_id AS application_id,
             students.student_id,
             students.first_name,
             students.last_name,
             students.email,
             students.degree,
             students.branch,
-            students.contact_number,
-            student_academic_details.resume,
+            students.contact_no AS contact_number,
+            students.resume,
+            job_postings.job_id,
             job_postings.company_name,
-            job_postings.job_title
+            job_postings.job_title,
+            students.placement_status
         FROM applications
         JOIN students ON applications.user_id = students.user_id
         JOIN job_postings ON applications.job_id = job_postings.job_id
-        JOIN student_academic_details ON students.student_id = student_academic_details.student_id
     ";
     $result = mysqli_query($conn, $query);
     
@@ -45,7 +45,7 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </head>
 <body class="bg-light">
-
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="tpo_dashboard.php">Campus Recruitment System</a>
@@ -56,6 +56,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="job_posting.php">Post a Job</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="show_jobs.php">Show Jobs</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="view_students.php">Students Data</a>
@@ -74,11 +77,10 @@
     <div class="container mt-5">
         <div class="bg-white p-4 rounded shadow-sm">
             <!-- Button to trigger the export -->
-            <form method="POST" action="export_excel.php" id="exportForm">
+            <form method="POST" action="export_excel.php?type=applications" id="exportForm">
                 <input type="hidden" name="search_query" id="search_query" value="">
                 <button type="submit" name="export_excel" class="btn btn-success mb-3">Export Filtered Data to Excel</button>
             </form>
-
 
             <table id="applicationsTable" class="table table-striped">
                 <thead class="table-light">
@@ -92,6 +94,7 @@
                         <th scope="col">Resume</th>
                         <th scope="col">Company Name</th>
                         <th scope="col">Job Title</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,13 +108,19 @@
                             <td><?php echo htmlspecialchars($row['contact_number']); ?></td>
                             <td>
                                 <?php if ($row['resume']) : ?>
-                                    <a href="../uploads/resumes/<?php echo htmlspecialchars($row['resume']); ?>" target="_blank">View Resume</a>
+                                    <a href="../uploads/resumes/<?php echo htmlspecialchars($row['resume']); ?>" target="_blank">Resume</a>
                                 <?php else : ?>
                                     No resume uploaded
                                 <?php endif; ?>
                             </td>
                             <td><?php echo htmlspecialchars($row['company_name']); ?></td>
                             <td><?php echo htmlspecialchars($row['job_title']); ?></td>
+                            <td>
+                                <select class="placement-status" data-student-id="<?php echo $row['student_id']; ?>" data-job-id="<?php echo $row['job_id']; ?>">
+                                    <option value="1" <?php if ($row['placement_status'] == 1) echo 'selected'; ?>>Placed</option>
+                                    <option value="0" <?php if ($row['placement_status'] == 0) echo 'selected'; ?>>Unplaced</option>
+                                </select>
+                            </td>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
@@ -136,8 +145,25 @@
                 $('#search_query').val(searchQuery);  // Set it in the hidden input field
             });
         });
-    </script>
 
+        $('.placement-status').change(function() {
+            var studentId = $(this).data('student-id');
+            var jobId = $(this).data('job-id');  
+            var newStatus = $(this).val();
+            
+            $.ajax({
+                url: 'update_placement_status.php',
+                type: 'POST',
+                data: { student_id: studentId, job_id: jobId, placement_status: newStatus }, 
+                success: function(response) {
+                    alert('Placement status updated successfully.');
+                },
+                error: function() {
+                    alert('Failed to update status.');
+                }
+            });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

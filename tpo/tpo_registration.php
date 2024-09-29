@@ -1,9 +1,9 @@
 <?php
-    include '../db.php'; // Adjust the path if needed
+    include '../db.php';
 
     session_start();
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ../index.php'); // Redirect to login page if not logged in
+        header('Location: ../index.php'); 
         exit();
     }
 
@@ -13,11 +13,9 @@
         $email = $_POST['email'];
         $contact_number = $_POST['contact_number'];
 
-        // Insert into users table
         $query = "INSERT INTO users (username, password, role, name) VALUES ('$email', '$password', 'tpo', '$name')";
         if (mysqli_query($conn, $query)) {
-            $user_id = mysqli_insert_id($conn); // Get user_id for tpo table
-
+            $user_id = mysqli_insert_id($conn); 
             // Insert into tpo table
             $tpo_query = "INSERT INTO tpo (user_id, name, email, contact_number)
                           VALUES ('$user_id', '$name', '$email', '$contact_number')";
@@ -41,7 +39,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
@@ -53,6 +50,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="job_posting.php">Post a Job</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="show_jobs.php">Show Jobs</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="view_students.php">Students Data</a>
@@ -100,7 +100,6 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

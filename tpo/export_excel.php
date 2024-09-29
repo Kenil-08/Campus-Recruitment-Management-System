@@ -1,76 +1,102 @@
 <?php
-    require '../Classes/PHPExcel.php'; // Include PHPExcel
-    include '../db.php'; 
+    include '../db.php';
+    session_start();
 
-    // Check if export is triggered
-    if (isset($_POST['export_excel'])) {
-        // Get the search query sent from the form
-        $searchQuery = isset($_POST['search_query']) ? $_POST['search_query'] : '';
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../index.php');
+        exit();
+    }
 
-        // Adjust the query to filter by the search query (in this case, company name)
+    // Get the export type (e.g., applications or students)
+    $type = isset($_GET['type']) ? $_GET['type'] : 'applications';
+
+    // Function to export data to Excel
+    function exportToExcel($filename, $data, $columns) {
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename=' . $filename . '.xls');
+
+        echo implode("\t", $columns) . "\n";
+        foreach ($data as $row) {
+            echo implode("\t", array_values($row)) . "\n";
+        }
+    }
+    // Check if search query is set
+    $search_query = isset($_POST['search_query']) ? mysqli_real_escape_string($conn, $_POST['search_query']) : '';
+
+    // Export Applications Data
+    if ($type == 'applications') {
         $query = "
-            SELECT 
+            SELECT
                 students.student_id,
-                students.first_name,
+                students.first_name, 
                 students.last_name,
                 students.email,
-                students.degree,
-                students.branch,
-                students.contact_number,
-                student_academic_details.resume,
-                job_postings.company_name,
-                job_postings.job_title
+                students.contact_no,
+                job_postings.company_name, 
+                job_postings.job_title,  
+                applications.application_date
             FROM applications
             JOIN students ON applications.user_id = students.user_id
-            JOIN job_postings ON applications.job_id = job_postings.job_id
-            JOIN student_academic_details ON students.student_id = student_academic_details.student_id
-            WHERE job_postings.company_name LIKE '%" . mysqli_real_escape_string($conn, $searchQuery) . "%'
+            JOIN job_postings ON applications.job_id = job_postings.job_id  
+            WHERE job_postings.company_name LIKE '%$search_query%' 
         ";
-
         $result = mysqli_query($conn, $query);
 
         if (!$result) {
-            echo "Error fetching data: " . mysqli_error($conn);
-            exit;
+            die("Error fetching applications data: " . mysqli_error($conn));
         }
 
-        // Create new PHPExcel object
-        $objPHPExcel = new PHPExcel();
-        $objPHPExcel->setActiveSheetIndex(0);
-        $sheet = $objPHPExcel->getActiveSheet();
-
-        // Add header row
-        $sheet->setCellValue('A1', 'Student ID');
-        $sheet->setCellValue('B1', 'Name');
-        $sheet->setCellValue('C1', 'Email');
-        $sheet->setCellValue('D1', 'Degree');
-        $sheet->setCellValue('E1', 'Branch');
-        $sheet->setCellValue('F1', 'Contact');
-        $sheet->setCellValue('G1', 'Company Name');
-        $sheet->setCellValue('H1', 'Job Title');
-
-        // Add data rows
-        $rowNum = 2; // Start from row 2
+        $data = [];
         while ($row = mysqli_fetch_assoc($result)) {
-            $sheet->setCellValue('A' . $rowNum, $row['student_id']);
-            $sheet->setCellValue('B' . $rowNum, $row['first_name'] . ' ' . $row['last_name']);
-            $sheet->setCellValue('C' . $rowNum, $row['email']);
-            $sheet->setCellValue('D' . $rowNum, $row['degree']);
-            $sheet->setCellValue('E' . $rowNum, $row['branch']);
-            $sheet->setCellValue('F' . $rowNum, $row['contact_number']);
-            $sheet->setCellValue('G' . $rowNum, $row['company_name']);
-            $sheet->setCellValue('H' . $rowNum, $row['job_title']);
-            $rowNum++;
+            $data[] = $row;
         }
 
-        // Export the file
-        $fileName = 'applications_' . date('Y-m-d_H-i-s') . '.xlsx';
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="' . $fileName . '"');
-        header('Cache-Control: max-age=0');
+        $columns = ['Student ID', 'First Name', 'Last Name', 'Email', 'Contact No', 'Company Name', 'Job Title', 'Application Date'];
+        exportToExcel('applications_data', $data, $columns);
+    }
 
-        $writer = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        $writer->save('php://output');
-        exit();
+    // Export Students Data
+    elseif ($type == 'students') {
+        $query = "
+            SELECT 
+                student_id, 
+                first_name, 
+                last_name, 
+                email, 
+                contact_no, 
+                degree, 
+                branch, 
+                batch, 
+                tenth_percentage, 
+                twelfth_percentage, 
+                diploma_cgpa, 
+                bachelors_cgpa, 
+                masters_cgpa,
+                active_backlog,
+                dead_backlog,
+                placement_status 
+            FROM students
+        ";
+        $result = mysqli_query($conn, $query);
+
+        if (!$result) {
+            die("Error fetching students data: " . mysqli_error($conn));
+        }
+
+        $data = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $row['placement_status'] = $row['placement_status'] == 1 ? 'Placed' : 'Unplaced';
+            $data[] = $row;
+        }
+
+        $columns = [
+            'Student ID', 'First Name', 'Last Name', 'Email', 'Contact No', 
+            'Degree', 'Branch', 'Batch', '10th Percentage', '12th Percentage', 
+            'Diploma CGPA', 'Bachelors CGPA', 'Masters CGPA', 'Active Backlog', 'Dead Backlog', 'Placement Status'
+        ];
+        exportToExcel('students_data', $data, $columns);
+    }
+    else {
+        die("Invalid export type specified.");
     }
 ?>

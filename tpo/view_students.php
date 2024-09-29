@@ -3,12 +3,11 @@
     session_start();
    
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ../index.php'); // Redirect to login page if not logged in
+        header('Location: ../index.php');
         exit();
     }
     
-    // Fetch student details from the students table
-    $query = "SELECT student_id, first_name, last_name, degree, branch, placement_status FROM students";
+    $query = "SELECT student_id, first_name, last_name, email, contact_no, degree, branch, placement_status FROM students";
     $result = mysqli_query($conn, $query);
 
     if (!$result) {
@@ -29,7 +28,6 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </head>
 <body class="bg-light">
-
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
@@ -41,6 +39,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="job_posting.php">Post a Job</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="show_jobs.php">Show Jobs</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="view_students.php">Students Data</a>
@@ -59,7 +60,10 @@
     <!-- Students Data Table -->
     <div class="container mt-5">
         <div class="bg-white p-4 rounded shadow-sm">
-            <!-- <h2 class="h4 mb-4 text-center">Student Data</h2> -->
+            <form method="POST" action="export_excel.php?type=students" id="exportForm">
+                <input type="hidden" name="search_query" id="search_query" value="">
+                <button type="submit" name="export_excel" class="btn btn-success mb-3">Export Data to Excel</button>
+            </form>
 
             <table id="studentTable" class="table table-striped">
                 <thead class="table-light">
@@ -67,9 +71,10 @@
                         <th scope="col">Student ID</th>
                         <th scope="col">First Name</th>
                         <th scope="col">Last Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Contact No</th>
                         <th scope="col">Degree</th>
                         <th scope="col">Branch</th>
-                        <th scope="col">Placement Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,15 +83,10 @@
                             <td><?php echo htmlspecialchars($row['student_id']); ?></td>
                             <td><?php echo htmlspecialchars($row['first_name']); ?></td>
                             <td><?php echo htmlspecialchars($row['last_name']); ?></td>
+                            <td><?php echo htmlspecialchars($row['email']); ?></td>
+                            <td><?php echo htmlspecialchars($row['contact_no']); ?></td>
                             <td><?php echo htmlspecialchars($row['degree']); ?></td>
                             <td><?php echo htmlspecialchars($row['branch']); ?></td>
-                            <td>
-                                <select class="placement-status" data-student-id="<?php echo $row['student_id']; ?>">
-                                    <option value="1" <?php if ($row['placement_status'] == 1) echo 'selected'; ?>>Placed</option>
-                                    <option value="0" <?php if ($row['placement_status'] == 0) echo 'selected'; ?>>Unplaced</option>
-                                </select>
-                            </td>
-
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
@@ -96,14 +96,15 @@
     <script>
         $(document).ready(function() {
             $('#studentTable').DataTable({
-                "paging": true,    // Enable pagination
-                "searching": true, // Enable search functionality
-                "ordering": true,  // Enable column sorting
-                "info": true,      // Enable information text
-                "lengthMenu": [5, 10, 25, 50], // Control page length options
-                "pageLength": 10   // Set initial page length
+                "paging": true,   
+                "searching": true, 
+                "ordering": true,  
+                "info": true,      
+                "lengthMenu": [5, 10, 25, 50], 
+                "pageLength": 10  
             }); 
         });
+        
         $(document).ready(function() {
             $('.placement-status').change(function() {
                 var studentId = $(this).data('student-id');
