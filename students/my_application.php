@@ -1,16 +1,17 @@
 <?php
-    include '../db.php'; // Adjust the path to your database connection file
+    include '../db.php'; 
     session_start();
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ../index.php'); // Redirect to login page if not logged in
+        header('Location: ../index.php'); 
         exit();
     }
-
     // Fetch applications along with student and job details
     $query = "
         SELECT 
-            applications.id AS application_id,
+            applications.application_id AS application_id,
             students.student_id,
+            students.first_name,
+            students.last_name,
             job_postings.company_name,
             job_postings.job_title,
             job_postings.ctc,
@@ -18,6 +19,7 @@
         FROM applications
         JOIN students ON applications.user_id = students.user_id
         JOIN job_postings ON applications.job_id = job_postings.job_id
+        WHERE students.user_id = '" . $_SESSION['user_id'] . "'
     ";
     $result = mysqli_query($conn, $query);
     
@@ -39,7 +41,6 @@
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </head>
 <body class="bg-light">
-
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
@@ -53,13 +54,7 @@
                         <a class="nav-link" href="student_dashboard.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="view_jobs.php">View Jobs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="acedemic_form.php">Acedemic Form</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="my_application.php">My Applications</a>
+                        <a class="nav-link" href="my_application.php">All Applied Jobs</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="profile.php">Profile</a>
@@ -99,7 +94,7 @@
 
     <script>
         $(document).ready(function() {
-            var table = $('#myApplicationsTable').DataTable({
+            $('#myApplicationsTable').DataTable({
                 "paging": true,
                 "searching": true,
                 "ordering": true,

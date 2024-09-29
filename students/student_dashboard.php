@@ -1,12 +1,12 @@
 <?php
-    include '../db.php'; // Database connection
+    include '../db.php'; 
 
     session_start();
     if (!isset($_SESSION['user_id'])) {
-        header('Location: ../index.php'); // Redirect to login page if not logged in
+        header('Location: ../index.php'); 
         exit();
     }
-    $name = $_SESSION['name']; // Retrieve the name from the session
+    $name = $_SESSION['name']; 
 
     // Fetch student's degree from the students table
     $user_id = $_SESSION['user_id'];
@@ -38,13 +38,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    
     <!-- Custom CSS -->
     <style>
         body {
@@ -83,11 +78,8 @@
                 <div class="sidebar-sticky pt-3">
                 <h1 class="card-title h3 mb-4 text-white"><?php echo htmlspecialchars($name); ?></h1>
                     <ul class="nav flex-column">
-                        <!-- <li class="nav-item mb-3">
-                            <a class="nav-link" href="view_jobs.php">Available Jobs</a>
-                        </li> -->
                         <li class="nav-item mb-3">
-                            <a class="nav-link" href="my_application.php">My Applications</a>
+                            <a class="nav-link" href="my_application.php">All Applied Jobs</a>
                         </li>
                         <li class="nav-item mb-3">
                             <a class="nav-link" href="profile.php">My Profile</a>
@@ -142,12 +134,6 @@
             </main>
         </div>
     </div>
-
-    <!-- Footer -->
-    <!-- <footer class="footer bg-dark text-white text-center py-2">
-        <p>&copy; <?php echo date("Y"); ?> Campus Recruitment System. All rights reserved.</p>
-    </footer> -->
-    
     <script> 
         function confirmApply(jobId, companyName) {
             if(confirm("Are you sure you want to apply for this job?")) {
@@ -155,8 +141,6 @@
             }
         }
     </script>
-
-    <!-- Bootstrap JS (Optional) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
