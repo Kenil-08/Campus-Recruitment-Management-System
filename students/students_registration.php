@@ -1,7 +1,7 @@
 <?php
-    include '../db.php'; // Database connection
+    include '../db.php'; 
 
-    $registration_success = ''; // Initialize the variable
+    $registration_success = ''; 
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $student_id = $_POST['student_id'];
@@ -21,7 +21,7 @@
 
         $name = $first_name . ' ' . $last_name;
 
-        // Handling file upload
+        
         $resume = null;
         if (isset($_FILES['resume']) && $_FILES['resume']['error'] == 0) {
             $upload_dir = '../uploads/resume/';
@@ -30,9 +30,9 @@
             $filename = $uuid . '.' . $extension; // Create the unique file name
             $target_file = $upload_dir . $filename;
         
-            // Move uploaded file to target directory
+            
             if (move_uploaded_file($_FILES['resume']['tmp_name'], $target_file)) {
-                $resume = $filename; // Store the unique file name in the database
+                $resume = $filename; 
             } else {
                 echo "<div class='alert alert-danger'>Error uploading the resume.</div>";
             }
@@ -41,16 +41,14 @@
         if (!preg_match('/^[0-9]{10}$/', $contact_no)) {
             echo "Invalid mobile number. Please enter a valid 10-digit number.";
         } else {
-            // Insert into users table
             $query = "INSERT INTO users (username, password, role, name) VALUES ('$email', '$password', 'student', '$name')";
             if (mysqli_query($conn, $query)) {
-                $user_id = mysqli_insert_id($conn); // Get user_id for students table
+                $user_id = mysqli_insert_id($conn); 
 
-                // Insert into students table, storing the resume file path
                 $student_query = "INSERT INTO students (student_id, user_id, first_name, last_name, email, contact_no, degree, branch, batch, tenth_percentage, twelfth_percentage, diploma_cgpa, bachelors_cgpa, masters_cgpa, resume)
                                   VALUES ('$student_id', '$user_id', '$first_name', '$last_name', '$email', '$contact_no', '$degree', '$branch', '$batch', '$tenth_percentage', '$twelfth_percentage', '$diploma_cgpa', '$bachelors_cgpa', '$masters_cgpa', '$resume')";
                 if (mysqli_query($conn, $student_query)) {
-                    $registration_success = "Student registration successful!"; // Set success message
+                    $registration_success = "Student registration successful!"; 
                 } else {
                     echo "Error: " . mysqli_error($conn);
                 }
@@ -158,7 +156,6 @@
                                                         <option value="AIML">AI/ML</option>
                                                         <option value="MCA">MCA</option>
                                                         <option value="MSCIT">MSCIT</option>
-                                                        <!-- Add other branches as needed -->
                                                     </select>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
@@ -221,7 +218,6 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

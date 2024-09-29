@@ -1,62 +1,56 @@
 <?php
-session_start();
-include '../db.php'; // Database connection
-
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
-
-// Fetch student details
-$user_id = $_SESSION['user_id'];
-
-// Get student details from `students` table
-$studentQuery = "SELECT * FROM students WHERE user_id = '$user_id'";
-$studentResult = mysqli_query($conn, $studentQuery);
-
-if ($studentResult && mysqli_num_rows($studentResult) > 0) {
-    $student = mysqli_fetch_assoc($studentResult);
-} else {
-    echo "No student details found.";
-    exit();
-}
-
-// Handle form submission for updating profile
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $contact_no = $_POST['contact_no']; 
-    $tenth_percentage = $_POST['tenth_percentage'];
-    $twelfth_percentage = $_POST['twelfth_percentage'];
-    $diploma_cgpa = $_POST['diploma_cgpa'];
-    $bachelors_cgpa = $_POST['bachelors_cgpa'];
-    $masters_cgpa = $_POST['masters_cgpa'];
-    $active_backlog = $_POST['active_backlog'];
-    $dead_backlog = $_POST['dead_backlog'];
-    $resume = $_FILES['resume']['name'];
-
-    // Update `students` table with the new values
-    $updateStudentQuery = "UPDATE students SET first_name='$first_name', last_name='$last_name', contact_no='$contact_no', 
-                            tenth_percentage='$tenth_percentage', twelfth_percentage='$twelfth_percentage', 
-                            diploma_cgpa='$diploma_cgpa', bachelors_cgpa='$bachelors_cgpa', masters_cgpa='$masters_cgpa', active_backlog='$active_backlog', dead_backlog='$dead_backlog' 
-                            WHERE user_id='$user_id'";
-    mysqli_query($conn, $updateStudentQuery);
-
-    // Optional: Handle file upload for resume
-    if (isset($resume) && $resume != '') {
-        $resume_tmp = $_FILES['resume']['tmp_name'];
-        move_uploaded_file($resume_tmp, "../uploads/resumes/" . $resume);
-
-        // Update resume in `students`
-        $updateResumeQuery = "UPDATE students SET resume='$resume' WHERE user_id='$user_id'";
-        mysqli_query($conn, $updateResumeQuery);
+    session_start();
+    include '../db.php'; 
+    
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: login.php");
+        exit();
     }
 
-    echo "Profile updated successfully!";
-    header("Location: profile.php"); // Redirect to avoid resubmission
-    exit();
-}
+    $user_id = $_SESSION['user_id'];
+
+    // Get student details from `students` table
+    $studentQuery = "SELECT * FROM students WHERE user_id = '$user_id'";
+    $studentResult = mysqli_query($conn, $studentQuery);
+
+    if ($studentResult && mysqli_num_rows($studentResult) > 0) {
+        $student = mysqli_fetch_assoc($studentResult);
+    } else {
+        echo "No student details found.";
+        exit();
+    }
+
+    // Handle form submission for updating profile
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $contact_no = $_POST['contact_no']; 
+        $tenth_percentage = $_POST['tenth_percentage'];
+        $twelfth_percentage = $_POST['twelfth_percentage'];
+        $diploma_cgpa = $_POST['diploma_cgpa'];
+        $bachelors_cgpa = $_POST['bachelors_cgpa'];
+        $masters_cgpa = $_POST['masters_cgpa'];
+        $active_backlog = $_POST['active_backlog'];
+        $dead_backlog = $_POST['dead_backlog'];
+        $resume = $_FILES['resume']['name'];
+
+        $updateStudentQuery = "UPDATE students SET first_name='$first_name', last_name='$last_name', contact_no='$contact_no', 
+                                tenth_percentage='$tenth_percentage', twelfth_percentage='$twelfth_percentage', 
+                                diploma_cgpa='$diploma_cgpa', bachelors_cgpa='$bachelors_cgpa', masters_cgpa='$masters_cgpa', active_backlog='$active_backlog', dead_backlog='$dead_backlog' 
+                                WHERE user_id='$user_id'";
+        mysqli_query($conn, $updateStudentQuery);
+
+        if (isset($resume) && $resume != '') {
+            $resume_tmp = $_FILES['resume']['tmp_name'];
+            move_uploaded_file($resume_tmp, "../uploads/resumes/" . $resume);
+
+            $updateResumeQuery = "UPDATE students SET resume='$resume' WHERE user_id='$user_id'";
+            mysqli_query($conn, $updateResumeQuery);
+        }
+        echo "Profile updated successfully!";
+        header("Location: profile.php"); // Redirect to avoid resubmission
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -89,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .btn-primary {
             margin-top: 10px;
         }
-        /* Minimize padding */
+        
         .mb-3 {
             margin-bottom: 10px !important;
         }
@@ -109,7 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body class="bg-light">
-
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
@@ -120,9 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="student_dashboard.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="view_jobs.php">View Jobs</a></li>
-                    <li class="nav-item"><a class="nav-link" href="academic_form.php">Academic Form</a></li>
-                    <li class="nav-item"><a class="nav-link" href="my_application.php">My Applications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="my_application.php">All Applied Jobs</a></li>
                     <li class="nav-item"><a class="nav-link" href="profile.php">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="../index.php">Logout</a></li>
                 </ul>
@@ -131,7 +122,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </nav>
 
     <div class="container">
-        <!-- Single card for the entire profile form -->
         <div class="card">
             <div class="card-header">Student Profile</div>
             <form method="POST" enctype="multipart/form-data">
@@ -202,7 +192,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
