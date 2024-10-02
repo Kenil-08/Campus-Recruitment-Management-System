@@ -75,4 +75,13 @@ The following packages are used in this project for specific functionalities. Ma
    - `job_document` (for storing job-related documents)
    - `resume` (for storing student resumes)
 
+## Conclusion
+
+The Campus Recruitment Management System is designed to streamline the recruitment process, making it easier for students to find and apply for job opportunities while enabling TPOs to efficiently manage job postings and student applications. This system enhances communication and organization within the recruitment process, providing valuable insights through data visualization.
+
+We encourage contributions and feedback to improve this project. For any issues or feature requests, please feel free to open an issue on the repository.
+
+Thank you for using the Campus Recruitment Management System!
+
+
 
