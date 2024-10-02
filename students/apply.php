@@ -10,7 +10,7 @@
         $user_id = $_SESSION['user_id'];
     
         // Insert application into the applications table
-        $query = "INSERT INTO applications (user_id, job_id) VALUES ('$user_id', '$job_id')";
+        $query = "INSERT INTO applications (user_id, job_id, application_date) VALUES ('$user_id', '$job_id', NOW())";
     
         if (mysqli_query($conn, $query)) {
             echo "<h1>Application successful for " . htmlspecialchars($company_name) . " (Job ID: " . htmlspecialchars($job_id) . ")</h1>";

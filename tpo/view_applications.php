@@ -20,6 +20,7 @@
             job_postings.job_id,
             job_postings.company_name,
             job_postings.job_title,
+            applications.application_date,
             students.placement_status
         FROM applications
         JOIN students ON applications.user_id = students.user_id
@@ -94,6 +95,7 @@
                         <th scope="col">Resume</th>
                         <th scope="col">Company Name</th>
                         <th scope="col">Job Title</th>
+                        <th scope="col">Application Date</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -115,6 +117,7 @@
                             </td>
                             <td><?php echo htmlspecialchars($row['company_name']); ?></td>
                             <td><?php echo htmlspecialchars($row['job_title']); ?></td>
+                            <td><?php echo htmlspecialchars($row['application_date']); ?></td>
                             <td>
                                 <select class="placement-status" data-student-id="<?php echo $row['student_id']; ?>" data-job-id="<?php echo $row['job_id']; ?>">
                                     <option value="1" <?php if ($row['placement_status'] == 1) echo 'selected'; ?>>Placed</option>
