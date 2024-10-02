@@ -71,7 +71,7 @@
 
             <form method="POST" action="">
                 <div class="form-group">
-                    <label for="username" class="font-weight-bold">Username:</label>
+                    <label for="username" class="font-weight-bold">Email:</label>
                     <input type="text" id="username" name="username" class="form-control" required>
                 </div>
 

@@ -72,6 +72,10 @@
             position: sticky;
             top: 0;
         }
+        .required::after {
+            content: " *";
+            color: red;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -98,30 +102,30 @@
                                         <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="student_id" class="form-label">Student ID:</label>
-                                                    <input type="text" id="student_id" name="student_id" required class="form-control">
+                                                    <label for="student_id" class="form-label required">Student ID:</label>
+                                                    <input type="text" id="student_id" name="student_id" required class="form-control" >
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="first_name" class="form-label">First Name:</label>
-                                                    <input type="text" id="first_name" name="first_name" required class="form-control">
+                                                    <label for="first_name" class="form-label required">First Name:</label>
+                                                    <input type="text" id="first_name" name="first_name" required class="form-control" pattern="[A-Za-z]+" title="First name should only contain letters.">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="last_name" class="form-label">Last Name:</label>
-                                                    <input type="text" id="last_name" name="last_name" required class="form-control">
+                                                    <label for="last_name" class="form-label required">Last Name:</label>
+                                                    <input type="text" id="last_name" name="last_name" required class="form-control" pattern="[A-Za-z]+" title="Last name should only contain letters.">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="contact_no" class="form-label">Contact Number:</label>
+                                                    <label for="contact_no" class="form-label required">Contact Number:</label>
                                                     <input type="tel" id="contact_no" name="contact_no" required class="form-control" pattern="[0-9]{10}" maxlength="10" title="Please enter a 10-digit mobile number.">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="email" class="form-label">Email:</label>
+                                                    <label for="email" class="form-label required">Email:</label>
                                                     <input type="email" id="email" name="email" required class="form-control">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="password" class="form-label">Password:</label>
-                                                    <input type="password" id="password" name="password" required class="form-control">
+                                                    <label for="password" class="form-label required">Password:</label>
+                                                    <input type="password" id="password" name="password" required class="form-control" pattern="^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{5,8}$" 
+                                                    title="Password must be between 5-8 characters, contain at least one letter, one digit, and one special character.">
                                                 </div>
-                                                
                                             </div>
                                         </div>
                                     </div>
@@ -138,7 +142,7 @@
                                         <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="degree" class="form-label">Degree:</label>
+                                                    <label for="degree" class="form-label required">Degree:</label>
                                                     <select id="degree" name="degree" required class="form-select">
                                                         <option value="">Select Degree</option>
                                                         <option value="B.Tech">B.Tech</option>
@@ -147,7 +151,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="branch" class="form-label">Branch:</label>
+                                                    <label for="branch" class="form-label required">Branch:</label>
                                                     <select id="branch" name="branch" required class="form-select">
                                                         <option value="">Select Branch</option>
                                                         <option value="CSE">CSE</option>
@@ -159,19 +163,19 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="tenth_percentage" class="form-label">10th Percentage:</label>
+                                                    <label for="tenth_percentage" class="form-label required">10th Percentage:</label>
                                                     <input type="number" id="tenth_percentage" name="tenth_percentage" required class="form-control" step="0.01" min="0" max="100">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label for="twelfth_percentage" class="form-label">12th Percentage:</label>
-                                                    <input type="number" id="twelfth_percentage" name="twelfth_percentage"  class="form-control" step="0.01" min="0" max="100">
+                                                    <input type="number" id="twelfth_percentage" name="twelfth_percentage" class="form-control" step="0.01" min="0" max="100">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label for="diploma_cgpa" class="form-label">Diploma GPA:</label>
                                                     <input type="number" id="diploma_cgpa" name="diploma_cgpa" class="form-control" step="0.01" min="0" max="10">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="bachelors_cgpa" class="form-label">Bachelor's CGPA:</label>
+                                                    <label for="bachelors_cgpa" class="form-label required">Bachelor's CGPA:</label>
                                                     <input type="number" id="bachelors_cgpa" name="bachelors_cgpa" required class="form-control" step="0.01" min="0" max="10">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
@@ -179,7 +183,7 @@
                                                     <input type="number" id="masters_cgpa" name="masters_cgpa" class="form-control" step="0.01" min="0" max="10">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="batch" class="form-label">Batch (Exa : 2025):</label>
+                                                    <label for="batch" class="form-label required">Batch (Exa: 2025):</label>
                                                     <input type="text" id="batch" name="batch" required class="form-control">
                                                 </div>
                                             </div>
@@ -198,7 +202,7 @@
                                         <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="resume" class="form-label">Upload Resume </label>
+                                                    <label for="resume" class="form-label required">Upload Resume:</label>
                                                     <input type="file" id="resume" name="resume" required class="form-control">
                                                 </div>
                                             </div>
